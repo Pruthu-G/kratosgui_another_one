@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="spectro_gui" pkg="kratosgui_another_one" type="socket_for_spectro.py" output="screen">
+    <node name="arm_gui" pkg="kratosgui_another_one" type="socket_for_arm.py" output="screen">
+    <node name="gas_gui" pkg="kratosgui_another_one" type="socket_for_SGP30.py" output="screen">
+    <node name="multichannel_gui" pkg="kratosgui_another_one" type="socket_for_multichannel.py">
+    <node name="BME_280" pkg="kratosgui" type="socket_for_BME280.py" output="screen">
+</launch>

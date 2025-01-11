@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRATOS</title>
+    <script type="module" src="{{url_for('static',filename='js/chart.umd.js')}}"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1800px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 16px;
+            height: 100vh;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: #121212;
+            padding: 16px 0;
+            border-bottom: 1px solid #2a2a2a;
+            gap: 32px;
+            flex-shrink: 0;
+        }
+
+        .tab {
+            color: #E0E0E0;
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tab img {
+            height: 60px;
+            object-fit: fill;
+        }
+
+        .tab:hover {
+            background-color: #2a2a2a;
+        }
+
+        .tab.active {
+            background-color: #2a2a2a;
+            position: relative;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #E0E0E0;
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 12px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .side-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 300px;
+        }
+
+        .side-post {
+            flex: 1;
+            position: relative;
+            background-color: #2a2a2a;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .main-post {
+            position: relative;
+            background-color: #2a2a2a;
+            overflow: hidden;
+            min-height: 0;
+            border-radius: 8px;
+        }
+
+        .post {
+            position: relative;
+            background-color: #2a2a2a;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            min-height: 0;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .post:hover, .side-post:hover, .main-post:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        .post img, .main-post img, .side-post img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .post:hover img, .main-post:hover img, .side-post:hover img {
+            transform: scale(1.05);
+        }
+
+        .details {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .details h3 {
+            margin-bottom: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .details p {
+            font-size: 14px;
+            color: #B0B0B0;
+        }
+
+        .bottom-posts {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            min-height: 0;
+            height: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            .side-posts {
+                width: 100%;
+                flex-direction: row;
+                height: 200px;
+            }
+
+            .side-post {
+                width: 33.33%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(5, auto);
+            }
+            
+            .main-post {
+                aspect-ratio: 16/9;
+            }
+            
+            .post {
+                aspect-ratio: 16/9;
+            }
+
+            .bottom-posts {
+                grid-column: 1;
+                grid-template-columns: 1fr;
+            }
+
+            .side-posts {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .side-post {
+                width: 100%;
+                aspect-ratio: 16/9;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active"><img src="{{url_for('static',filename='kratoslogo.png')}}"></div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="main-post" id="arm-post">
+                    <div class="details">
+                        <h3>Arm</h3>
+                        <p>Arm Visualiser</p>
+                    </div>
+                </div>
+                
+                <div class="main-post" id="spectro">
+                    <canvas id="chrt" width="100%" height="100%"></canvas>
+                    
+                    <script type="module" src="{{url_for('static',filename='js/graphs.js')}}"></script>
+                    
+                </div>
+
+                <div class="bottom-posts">
+                    <div class="post">
+                        <div class="details">
+                            <h3>NPK</h3>
+                            <p>Nitrogen Phosphorous Potassium</p>
+                        </div>
+                    </div>
+                    <div class="post">
+                        <div class="details">
+                            <h3>Gas Sensor(SGP30)</h3>
+                            <p>TVOC,eCO2</p>
+                        </div>
+                    </div>
+                    <div class="post">
+                        <div class="details">
+                            <h3>Multichannel Gas Sensor</h3>
+                            <p>NH3,CO,NO2,C3H8,C4H10,CH4,H2,C2H5OH</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-posts">
+                <div class="side-post">
+                    <div class="details">
+                        <h3>BME280</h3>
+                        <p>Pressure,Humidity,Temperature</p>
+                    </div>
+                </div>
+                <div class="side-post">
+                    <img width="100%" height="100%" src="../static/kuromi.gif">
+                    <div class="details">
+                        
+                        <h3>Kuromi</h3>
+                        <p>Hello Kitty Goth Chick</p>
+                    </div>
+                </div>
+                <div class="side-post">
+                    <div class="details">
+                        <h3></h3>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="{{url_for('static',filename='js/arm.js')}}"></script>
+</body>
+</html>
